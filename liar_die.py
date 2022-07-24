@@ -43,7 +43,11 @@ class Node:
                 self.strategySum[a] /= normalizingSum
             else:
                 self.strategySum[a] = 1.0/len(self.strategySum)
+
         return self.strategySum
+
+    def __repr__(self):
+        return str(self.strategy)
 
 
 class LiarDieTrainer:
@@ -68,7 +72,7 @@ class LiarDieTrainer:
         for i in range(iterations):
             # Initialize rolls and starting probalities
             for i in range(len(rollAfterAcceptingClaim)):
-                rollAfterAcceptingClaim[i] = random.randint(0, self.sides) + 1
+                rollAfterAcceptingClaim[i] = random.randint(0, self.sides-1) + 1
             self.claimNodes[0][rollAfterAcceptingClaim[0]].pPlayer = 1
             self.claimNodes[0][rollAfterAcceptingClaim[0]].pOpponent = 1
             # Accumulate realization weights forward
@@ -140,21 +144,27 @@ class LiarDieTrainer:
                             for a in range(len(node.strategySum)):
                                 node.strategySum[a] = 0
         for initialRoll in range(1, self.sides +1):
-            print(f"Initial claim policy rolll with roll {initialRoll}")
+            print(f"Initial claim policy roll with roll {initialRoll}")
             for prob in self.claimNodes[0][initialRoll].getAverageStrategy():
-                print(prob)
+                print(f"{prob:.4f}")
             print(" ")
         print("Old Claim    New Claim   Action Probabilities")
         for myClaim in range(self.sides+1):
             for oppClaim in range(myClaim+1, self.sides+1):
-                print("     ", myClaim, "       ", oppClaim, "       ", self.responseNodes[myClaim][oppClaim].getAverageStrategy())
+                formattedList = ["%.4f" % num for num in self.responseNodes[myClaim][oppClaim].getAverageStrategy()]
+                print(f"     {myClaim}        {oppClaim}        {formattedList}")
         print("Old Claim    Roll    Action Probabilities")
         for oppClaim in range(self.sides):
             for roll in range(1, self.sides +1):
-                print("     ", oppClaim, "      ", roll, "      ", self.claimNodes[oppClaim][roll].getAverageStrategy())
+                formattedList = ["%.4f" % num for num in self.claimNodes[oppClaim][roll].getAverageStrategy()]
+                print(f"     {oppClaim}        {roll}        {formattedList}")
 
 
 if __name__ == '__main__':
+    import sys
     trainer = LiarDieTrainer(6)
-    trainer.train(1)
+    if len(sys.argv) > 1:
+        trainer.train(int(sys.argv[1]))
+    else:
+        trainer.train(1000)
 
