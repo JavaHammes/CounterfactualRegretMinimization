@@ -1,4 +1,5 @@
 # | liar_die.py
+# | Fixed-Strategy Iteration Counterfactual Regret Minimization
 # | simplification of the game liar dice
 
 import random
@@ -6,24 +7,6 @@ import numpy as np
 
 DOUBT = 0
 ACCEPT = 1
-#sides = None
-#responseNodes = None
-#claimNodes = None
-
-
-'''
-def normalized(a, axis=-1, order=2):
-    l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
-    l2[l2==0] = 1
-    return a / np.expand_dims(l2, axis)
-
-ar = np.array([1, 2, 3, 4, 5])
-
-ar_n = normalized(ar)
-
-print(ar_n)
-'''
-
 
 class Node:
 
